@@ -5,13 +5,12 @@ object dmJsonConvert: TdmJsonConvert
   Width = 434
   object cnSqlite: TFDConnection
     Params.Strings = (
-      'Database=V:\tests\JSONConvert\chinook.db'
+      'Database=V:\JSONConvert\chinook.db'
       'DriverID=SQLite')
     UpdateOptions.AssignedValues = [uvLockMode, uvRefreshMode, uvCheckRequired]
     UpdateOptions.LockMode = lmOptimistic
     UpdateOptions.RefreshMode = rmAll
     ConnectedStoredUsage = [auDesignTime]
-    Connected = True
     LoginPrompt = False
     Left = 144
     Top = 88
@@ -22,7 +21,6 @@ object dmJsonConvert: TdmJsonConvert
   end
   object qryCustomers: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Connection = cnSqlite
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
@@ -62,7 +60,6 @@ object dmJsonConvert: TdmJsonConvert
   end
   object qryInvoices: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     MasterSource = srcCustomers
     MasterFields = 'CustomerId'
     DetailFields = 'CustomerId'
@@ -112,7 +109,6 @@ object dmJsonConvert: TdmJsonConvert
   end
   object qryInvoiceItems: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     MasterSource = srcInvoices
     MasterFields = 'InvoiceId'
     DetailFields = 'InvoiceId'
