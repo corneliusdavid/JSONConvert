@@ -9,3 +9,7 @@ This was built with Delphi 13 using the VCL framework but could likely be compil
 ## Database
 
 The included SQLite database is a copy of the Chinook sample database that can be found many places around the web.
+
+## Dependency
+
+There are two JSON libraries used (initially, more later perhaps); the first one is the built in one to modern versions of delphi: System.JSON. The second is [EasyJson](https://github.com/tinyBigGAMES/EasyJson) from [tinyBigGAMES](https://tinybiggames.com/). You will need to add this repository in a subfolder named, `EasyJson`, of the project directory.
