@@ -1,6 +1,6 @@
 # JSONConvert
 
-This simple program is just a demo that converts a sample database into a JSON structure and saves it to a file. It uses multiple JSON libraries to compare how they're used and was built to add to the discussion on JSON at the October 2025 meeting of the Oregon Delphi User Group.
+This simple program is just a demo that converts a sample database into a JSON structure and saves it to a file. It uses multiple JSON libraries to compare how they're used and was built to add to the discussion on JSON at the [October 2025 ODUG meeting](https://odug.org/events/2025-10/).
 
 ## Project
 
