@@ -20,7 +20,6 @@ object frmJSONConvert: TfrmJSONConvert
     Height = 41
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 923
     object btnExport: TBitBtn
       Left = 8
       Top = 9
@@ -58,7 +57,8 @@ object frmJSONConvert: TfrmJSONConvert
       Items.Strings = (
         'System.JSON (Embarcadero)'
         'EasyJson (tinyBigGames)'
-        'McJson (HydroByte)')
+        'McJson (HydroByte)'
+        'VSoft.YAML (VSoft Technologies)')
     end
   end
   object Panel2: TPanel
@@ -68,8 +68,6 @@ object frmJSONConvert: TfrmJSONConvert
     Height = 549
     Align = alRight
     TabOrder = 1
-    ExplicitLeft = 517
-    ExplicitHeight = 532
     object Label1: TLabel
       Left = 1
       Top = 238
@@ -173,8 +171,6 @@ object frmJSONConvert: TfrmJSONConvert
     Height = 549
     Align = alClient
     TabOrder = 2
-    ExplicitWidth = 517
-    ExplicitHeight = 532
     object Label2: TLabel
       Left = 1
       Top = 1

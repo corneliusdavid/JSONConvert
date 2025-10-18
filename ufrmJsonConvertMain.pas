@@ -40,6 +40,7 @@ type
     procedure ExportToSystemJson;
     procedure ExportToEasyJson;
     procedure ExportToMcJson;
+    procedure ExportToVSoftYAML;
   end;
 
 
@@ -56,6 +57,7 @@ uses
   System.JSON, {Embarcadero}
   EasyJson, {tinyBigGames}
   McJson, {HydroByte}
+  VSoft.YAML, {VSoft Technologies}
   udmJsonConvert;
 
 procedure TfrmJSONConvert.btnExportClick(Sender: TObject);
@@ -84,6 +86,7 @@ begin
     0: ExportToSystemJson;
     1: ExportToEasyJson;
     2: ExportToMcJson;
+    3: ExportToVSoftYAML;
   end;
 
   ShowMessage('Exported to ' + FExportFilename + '; elasped time in seconds: ' + StopWatch.Elapsed.Seconds.ToString);
@@ -298,6 +301,53 @@ begin
   finally
     mj.Free;
   end;
+end;
+
+procedure TfrmJSONConvert.ExportToVSoftYAML;
+var
+  vyj: IYAMLDocument;
+begin
+  FExportFilename := 'VSoftYAML.json';
+
+  vyj := TYAML.CreateMapping;
+
+    // == CUSTOMERS ==
+    var vyjCustomers := vyj.AsMapping.AddOrSetSequence('customers');
+    ExportCustomers(
+      procedure(const FirstName, LastName, City, State: string)
+      begin
+        var vyjCust := vyjCustomers.AddMapping;
+
+        vyjCust.AsMapping.AddOrSetValue('FirstName', FirstName);
+        vyjCust.AsMapping.AddOrSetValue('LastName', LastName);
+        vyjCust.AsMapping.AddOrSetValue('City', City);
+        vyjCust.AsMapping.AddOrSetValue('State', State);
+
+        // === INVOICES ===
+        var vyjInvoices := vyjCust.AsMapping.AddOrSetSequence('invoices');
+        ExportInvoices(
+          procedure(const InvoiceID: Integer; const InvoiceDT: TDateTime; const InvoiceTotal: Double)
+          begin
+            var vyjInv := vyjInvoices.AddMapping;
+            vyjInv.AsMapping.AddOrSetValue('InvId', InvoiceID);
+            vyjInv.AsMapping.AddOrSetValue('InvDT', InvoiceDT);
+            vyjInv.AsMapping.AddOrSetValue('Total', InvoiceTotal);
+
+            // === INVOICE ITEMS ===
+            var vyjItems := vyjInv.AsMapping.AddOrSetSequence('items');
+            ExportItems(
+              procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
+              begin
+                var vyjInvItem := vyjItems.AddMapping;
+                vyjInvItem.AsMapping.AddOrSetValue('LineId', LineID);
+                vyjInvItem.AsMapping.AddOrSetValue('TrackId', TrackID);
+                vyjInvItem.AsMapping.AddOrSetValue('UnitPrice', UnitPrice);
+                vyjInvItem.AsMapping.AddOrSetValue('Quantity', Quantity);
+              end);
+          end);
+      end);
+
+    TYAML.WriteToJSONFile(vyj, FExportFilename);
 end;
 
 

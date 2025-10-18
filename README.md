@@ -12,11 +12,12 @@ The included SQLite database is a copy of the Chinook sample database that can b
 
 ## Dependency
 
-There are three JSON libraries used (more might be added later):
+There are four JSON libraries used (more might be added later):
 
 - System.JSON: this is built in the modern versions of Delphi. 
 - [EasyJson](https://github.com/tinyBigGAMES/EasyJson) from [tinyBigGAMES](https://tinybiggames.com/)
 - [McJson](https://github.com/hydrobyte/McJSON) from [HydroByte](https://hydrobyte.com.br/site/)
+- [VSoft.YAML](https://github.com/VSoftTechnologies/VSoft.YAML) from [VSoft Technologies](https://www.finalbuilder.com/)
 
 All except for the first one will be needed to be downloaded (cloned from Github) separately as sub-folders under the main project; use the default name of the repository as the folder name (i.e "EasyJson" for the EasyJson project).
 
