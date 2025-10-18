@@ -19,3 +19,16 @@ There are three JSON libraries used (more might be added later):
 - [McJson](https://github.com/hydrobyte/McJSON) from [HydroByte](https://hydrobyte.com.br/site/)
 
 All except for the first one will be needed to be downloaded (cloned from Github) separately as sub-folders under the main project; use the default name of the repository as the folder name (i.e "EasyJson" for the EasyJson project).
+
+## Note ##
+
+The following JSON libraries will not be supported in this project:
+
+- [JsonTools](https://github.com/sysrpl/JsonTools): designed for Lazarus, generates compiler errors and several warnings when compiling in Delphi 13.
+- [jLkJson](https://sourceforge.net/projects/lkjson/): I do not want to deal with manually downloading zip files from SourceForge.
+- [JsonDataObjects](https://github.com/ahausladen/JsonDataObjects): class name conflicts with Delphi's System.JSON.
+- [Json4Delphi](https://github.com/MaiconSoft/json4delphi): class name conflicts with Delphi's REST.JSON.
+- [Grijjy.Bson](https://github.com/grijjy/GrijjyFoundation): over-complicated; documentation missing parts, doesn't handle Unicode characters by default.
+- [Neslib.Json](https://github.com/neslib/Neslib.Json): class name conflicts with Delphi's System.JSON.
+
+_While it's true that by simply putting the various "Export" procedures into their own units I could quite easily avoid name conflicts and include more libraries, this was intended to be a quick and simple project to demonstrate differences between various libraries, not an exhaustive comparison of all available. For that, see the [TestJSON](https://github.com/hydrobyte/TestJSON) repository._
