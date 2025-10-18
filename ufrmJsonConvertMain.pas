@@ -39,6 +39,7 @@ type
     procedure ExportToJson;
     procedure ExportToSystemJson;
     procedure ExportToEasyJson;
+    procedure ExportToMcJson;
   end;
 
 
@@ -54,6 +55,7 @@ uses
   System.Diagnostics,
   System.JSON, {Embarcadero}
   EasyJson, {tinyBigGames}
+  McJson, {HydroByte}
   udmJsonConvert;
 
 procedure TfrmJSONConvert.btnExportClick(Sender: TObject);
@@ -81,6 +83,7 @@ begin
   case cmbJsonLibs.ItemIndex of
     0: ExportToSystemJson;
     1: ExportToEasyJson;
+    2: ExportToMcJson;
   end;
 
   ShowMessage('Exported to ' + FExportFilename + '; elasped time in seconds: ' + StopWatch.Elapsed.Seconds.ToString);
@@ -246,5 +249,56 @@ begin
     ej.Free;
   end;
 end;
+
+procedure TfrmJSONConvert.ExportToMcJson;
+var
+  mj: TMcJsonItem;
+begin
+  FExportFilename := 'McJson.json';
+
+  mj := TMcJsonItem.Create;
+  try
+    // == CUSTOMERS ==
+    mj.Add('customers', jitArray);
+    ExportCustomers(
+      procedure(const FirstName, LastName, City, State: string)
+      begin
+        var mjCust := mj['customers'].Add(jitObject);
+
+        mjCust.Add('FirstName').AsString := FirstName;
+        mjCust.Add('LastName').AsString := LastName;
+        mjCust.Add('City').AsString := City;
+        mjCust.Add('State').AsString := State;
+
+        // === INVOICES ===
+        mjCust.Add('invoices', jitArray);
+        ExportInvoices(
+          procedure(const InvoiceID: Integer; const InvoiceDT: TDateTime; const InvoiceTotal: Double)
+          begin
+            var mjInv := mjCust['invoices'].Add(jitObject);
+            mjInv.Add('InvId').AsInteger := InvoiceID;
+            mjInv.Add('InvDT').AsString := FormatDateTime('yyyy-mm-dd', InvoiceDT);
+            mjInv.Add('Total').AsNumber := InvoiceTotal;
+
+            // === INVOICE ITEMS ===
+            mjInv.Add('items', jitArray);
+            ExportItems(
+              procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
+              begin
+                var mjInvItem := mjInv['items'].Add(jitObject);
+                mjInvItem.Add('LineId').AsInteger := LineID;
+                mjInvItem.Add('TrackId').AsInteger := TrackID;
+                mjInvItem.Add('UnitPrice').AsNumber := UnitPrice;
+                mjInvItem.Add('Quantity').AsInteger := Quantity;
+              end);
+          end);
+      end);
+
+    mj.SaveToFile(FExportFilename);
+  finally
+    mj.Free;
+  end;
+end;
+
 
 end.

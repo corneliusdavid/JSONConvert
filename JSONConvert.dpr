@@ -4,7 +4,8 @@ uses
   Vcl.Forms,
   ufrmJsonConvertMain in 'ufrmJsonConvertMain.pas' {frmJSONConvert},
   udmJsonConvert in 'udmJsonConvert.pas' {dmJsonConvert: TDataModule},
-  EasyJson in 'EasyJson\src\EasyJson.pas';
+  EasyJson in 'EasyJson\src\EasyJson.pas',
+  McJSON in 'McJSON\src\McJSON.pas';
 
 {$R *.res}
 
