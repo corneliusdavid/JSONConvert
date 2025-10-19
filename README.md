@@ -42,18 +42,18 @@ It was interesting learning about the various JSON libraries and their different
 
 - Accented characters were shown as true Unicode characters in most but were "escaped" in the SuperObject library.
 - Dates were are quite varied in how they're assigned: 
- - System.JSON assigns dates to Double
- - McJson and EasyJson assign dates to Integer
- - SuperObject uses Long Integer for dates
- - EasyJson creates a standard U.S.-style string with month/day/year.
- - VSoft.YAML treats dates differently depending on how it's assigned; using the generic `AddOrSetValue` method with default parameters, it assigns the date value to Integer but using the `D` property, it creates a string with an ISO8601-formatted string.
+  - System.JSON assigns dates to Double
+  - McJson and EasyJson assign dates to Integer
+  - SuperObject uses Long Integer for dates
+  - EasyJson creates a standard U.S.-style string with month/day/year.
+  - VSoft.YAML treats dates differently depending on how it's assigned; using the generic `AddOrSetValue` method with default parameters, it assigns the date value to Integer but using the `D` property, it creates a string with an ISO8601-formatted string.
 - All the generated JSON files had the same order of elements except for SuperObject which, while consistent in it's placement of fields from record to record, was seemingly random in how it decided that order.
 
 Other differences were seen in the actual code needed to build and output the JSON. All but Delphi's System.JSON include their own `SaveToFile` (or similarly named) method for saving the structure to a file.
 
 The amount of code differed a little between the libraries;
 
-- The shortest was VSoft.YAML because it uses Interfaces, eliminating the need for freeing objects manually in try-finally blocks; plus it has its own file writer. 
+- The shortest was VSoft.YAML at 42 lines; it uses Interfaces, eliminating the need for freeing objects manually in try-finally blocks plus it has its own file writer. 
 - Next was McJson at 47 lines, freeing only the outer-most object.
 - SuperObject and System.JSON were a close match with the former at 52 lines and the latter at 53, both needing a little extra scaffolding for managing objects.
 - By far the longest procedure of these tested was EasyJson coming in at 70 lines. This library required me to not only create and free each intermediary object but also to use indexes when adding elements to an array (which I found to be odd; perhaps there's an option I missed...).
