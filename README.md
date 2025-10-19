@@ -12,7 +12,7 @@ The included SQLite database is a copy of the Chinook sample database that can b
 
 ## Dependency
 
-There are four JSON libraries used:
+There are five JSON libraries used:
 
 - [System.JSON](https://docwiki.embarcadero.com/Libraries/Florence/en/System.JSON): this is built into the modern versions of Delphi.
 - [EasyJson](https://github.com/tinyBigGAMES/EasyJson) from [tinyBigGAMES](https://tinybiggames.com/)
@@ -24,13 +24,13 @@ All except for the first one will be needed to be downloaded (cloned from Github
 
 ## Note ##
 
-The following JSON libraries are not be supported in this project:
+The following JSON libraries were considered but not added to this project:
 
 - [JsonTools](https://github.com/sysrpl/JsonTools): designed for Lazarus, generates compiler errors and several warnings when compiling in Delphi 13.
-- [jLkJson](https://sourceforge.net/projects/lkjson/): I do not want to deal with manually downloading zip files from SourceForge.
-- [JsonDataObjects](https://github.com/ahausladen/JsonDataObjects): class name conflicts with Delphi's System.JSON.
+- [jLkJson](https://sourceforge.net/projects/lkjson/): no updates in 15 years; not on Github.
+- [JsonDataObjects](https://github.com/ahausladen/JsonDataObjects): class name conflicts with Delphi's System.JSON; reportedly leaks memory.
 - [Json4Delphi](https://github.com/MaiconSoft/json4delphi): class name conflicts with Delphi's REST.JSON.
-- [Grijjy.Bson](https://github.com/grijjy/GrijjyFoundation): over-complicated; documentation missing parts, doesn't handle Unicode characters by default.
+- [Grijjy.Bson](https://github.com/grijjy/GrijjyFoundation): too much baggage for simple JSON; unclear how to manually build arrays; reportedly leaks memory.
 - [Neslib.Json](https://github.com/neslib/Neslib.Json): class name conflicts with Delphi's System.JSON.
 - [Chimera](https://bitbucket.org/sivv/chimera/src/develop/): class name conflicts with Delphi's REST.JSON.
 
