@@ -16,7 +16,11 @@ uses
   VSoft.YAML.Writer in 'VSoft.YAML\Source\VSoft.YAML.Writer.pas',
   VSoft.YAML.TagInfo in 'VSoft.YAML\Source\VSoft.YAML.TagInfo.pas',
   VSoft.YAML.StreamWriter in 'VSoft.YAML\Source\VSoft.YAML.StreamWriter.pas',
-  VSoft.YAML.Path in 'VSoft.YAML\Source\VSoft.YAML.Path.pas';
+  VSoft.YAML.Path in 'VSoft.YAML\Source\VSoft.YAML.Path.pas',
+  superobject in 'SuperObject\Lib\superobject.pas',
+  supertypes in 'SuperObject\Lib\supertypes.pas',
+  superdate in 'SuperObject\Lib\superdate.pas',
+  supertimezone in 'SuperObject\Lib\supertimezone.pas';
 
 {$R *.res}
 

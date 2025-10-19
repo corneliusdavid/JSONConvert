@@ -58,7 +58,8 @@ object frmJSONConvert: TfrmJSONConvert
         'System.JSON (Embarcadero)'
         'EasyJson (tinyBigGames)'
         'McJson (HydroByte)'
-        'VSoft.YAML (VSoft Technologies)')
+        'VSoft.YAML (VSoft Technologies)'
+        'SuperObject (Vadim Lou)')
     end
   end
   object Panel2: TPanel
@@ -71,20 +72,18 @@ object frmJSONConvert: TfrmJSONConvert
     object Label1: TLabel
       Left = 1
       Top = 238
-      Width = 404
+      Width = 91
       Height = 21
       Align = alTop
       Caption = 'Invoice Items'
-      ExplicitWidth = 91
     end
     object Label3: TLabel
       Left = 1
       Top = 1
-      Width = 404
+      Width = 56
       Height = 21
       Align = alTop
       Caption = 'Invoices'
-      ExplicitWidth = 56
     end
     object DBGrid2: TDBGrid
       Left = 1
@@ -174,11 +173,10 @@ object frmJSONConvert: TfrmJSONConvert
     object Label2: TLabel
       Left = 1
       Top = 1
-      Width = 521
+      Width = 75
       Height = 21
       Align = alTop
       Caption = 'Customers'
-      ExplicitWidth = 75
     end
     object DBGrid1: TDBGrid
       Left = 1

@@ -41,6 +41,7 @@ type
     procedure ExportToEasyJson;
     procedure ExportToMcJson;
     procedure ExportToVSoftYAML;
+    procedure ExportToSuperObject;
   end;
 
 
@@ -58,6 +59,7 @@ uses
   EasyJson, {tinyBigGames}
   McJson, {HydroByte}
   VSoft.YAML, {VSoft Technologies}
+  SuperObject, {Vadim Lou}
   udmJsonConvert;
 
 procedure TfrmJSONConvert.btnExportClick(Sender: TObject);
@@ -81,15 +83,15 @@ end;
 
 procedure TfrmJSONConvert.ExportToJson;
 begin
-  var StopWatch := TStopWatch.StartNew;
   case cmbJsonLibs.ItemIndex of
     0: ExportToSystemJson;
     1: ExportToEasyJson;
     2: ExportToMcJson;
     3: ExportToVSoftYAML;
+    4: ExportToSuperObject;
   end;
 
-  ShowMessage('Exported to ' + FExportFilename + '; elasped time in seconds: ' + StopWatch.Elapsed.Seconds.ToString);
+  ShowMessage('Exported to ' + FExportFilename);
 end;
 
 procedure TfrmJSONConvert.ExportCustomers(AddJsonCustomerProc: TAddJsonCustomerProc);
@@ -140,7 +142,10 @@ begin
       procedure(const FirstName, LastName, City, State: string)
       begin
         var sjCust := TJSONObject.Create;
-        sjCust.AddPair('FirstName', FirstName).AddPair('LastName', LastName).AddPair('City', City).AddPair('State', State);
+        sjCust.AddPair('FirstName', FirstName)
+              .AddPair('LastName', LastName)
+              .AddPair('City', City)
+              .AddPair('State', State);
 
         // === INVOICES ===
         var sjInvList := TJSONArray.Create;
@@ -158,8 +163,10 @@ begin
                 procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
                 begin
                   var sjItem := TJSONObject.Create;
-                  sjItem.AddPair('LineId', LineID).AddPair('TrackId', TrackID).AddPair('UnitPrice', UnitPrice).AddPair('Quantity',
-                    Quantity);
+                  sjItem.AddPair('LineId', LineID)
+                        .AddPair('TrackId', TrackID)
+                        .AddPair('UnitPrice', UnitPrice)
+                        .AddPair('Quantity', Quantity);
 
                   sjInvItems.Add(sjItem);
                 end);
@@ -177,7 +184,7 @@ begin
 
     var sw := TStreamWriter.Create(FExportFilename, False);
     try
-      sw.Write(sj);
+      sw.Write(sj.Format(2));
     finally
       sw.Free;
     end;
@@ -203,7 +210,10 @@ begin
       begin
         var ejCust := TEasyJson.Create;
         try
-          ejCust.Put('FirstName', FirstName).Put('LastName', LastName).Put('City', City).Put('State', State);
+          ejCust.Put('FirstName', FirstName)
+                .Put('LastName', LastName)
+                .Put('City', City)
+                .Put('State', State);
 
           // === INVOICES ===
           var ejInvList := ejCust.AddArray('invoices');
@@ -214,7 +224,9 @@ begin
             begin
               var ejInv := TEasyJson.Create;
               try
-                ejInv.Put('InvId', InvoiceID).Put('InvDT', InvoiceDT).Put('Total', InvoiceTotal);
+                ejInv.Put('InvId', InvoiceID)
+                     .Put('InvDT', InvoiceDT)
+                     .Put('Total', InvoiceTotal);
 
                 // === INVOICE ITEMS ===
                 var ejInvItems := ejInv.AddArray('items');
@@ -224,7 +236,10 @@ begin
                   begin
                     var ejItem := TEasyJson.Create;
                     try
-                      ejItem.Put('LineId', LineID).Put('TrackId', TrackID).Put('UnitPrice', UnitPrice).Put('Quantity', Quantity);
+                      ejItem.Put('LineId', LineID)
+                            .Put('TrackId', TrackID)
+                            .Put('UnitPrice', UnitPrice)
+                            .Put('Quantity', Quantity);
 
                       ejInvItems.Put(ItemCount, ejItem);
                       Inc(ItemCount);
@@ -268,10 +283,10 @@ begin
       begin
         var mjCust := mj['customers'].Add(jitObject);
 
-        mjCust.Add('FirstName').AsString := FirstName;
-        mjCust.Add('LastName').AsString := LastName;
-        mjCust.Add('City').AsString := City;
-        mjCust.Add('State').AsString := State;
+        mjCust.S['FirstName'] := FirstName;
+        mjCust.S['LastName'] := LastName;
+        mjCust.S['City'] := City;
+        mjCust.S['State'] := State;
 
         // === INVOICES ===
         mjCust.Add('invoices', jitArray);
@@ -279,9 +294,9 @@ begin
           procedure(const InvoiceID: Integer; const InvoiceDT: TDateTime; const InvoiceTotal: Double)
           begin
             var mjInv := mjCust['invoices'].Add(jitObject);
-            mjInv.Add('InvId').AsInteger := InvoiceID;
-            mjInv.Add('InvDT').AsString := FormatDateTime('yyyy-mm-dd', InvoiceDT);
-            mjInv.Add('Total').AsNumber := InvoiceTotal;
+            mjInv.I['InvId'] := InvoiceID;
+            mjInv.D['InvDT'] := InvoiceDT;
+            mjInv.D['Total'] := InvoiceTotal;
 
             // === INVOICE ITEMS ===
             mjInv.Add('items', jitArray);
@@ -289,10 +304,10 @@ begin
               procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
               begin
                 var mjInvItem := mjInv['items'].Add(jitObject);
-                mjInvItem.Add('LineId').AsInteger := LineID;
-                mjInvItem.Add('TrackId').AsInteger := TrackID;
-                mjInvItem.Add('UnitPrice').AsNumber := UnitPrice;
-                mjInvItem.Add('Quantity').AsInteger := Quantity;
+                mjInvItem.I['LineId'] := LineID;
+                mjInvItem.I['TrackId'] := TrackID;
+                mjInvItem.D['UnitPrice'] := UnitPrice;
+                mjInvItem.I['Quantity'] := Quantity;
               end);
           end);
       end);
@@ -311,43 +326,98 @@ begin
 
   vyj := TYAML.CreateMapping;
 
-    // == CUSTOMERS ==
-    var vyjCustomers := vyj.AsMapping.AddOrSetSequence('customers');
-    ExportCustomers(
-      procedure(const FirstName, LastName, City, State: string)
-      begin
-        var vyjCust := vyjCustomers.AddMapping;
+  // == CUSTOMERS ==
+  var vyjCustomers := vyj.AsMapping.AddOrSetSequence('customers');
+  ExportCustomers(
+    procedure(const FirstName, LastName, City, State: string)
+    begin
+      var vyjCust := vyjCustomers.AddMapping;
 
-        vyjCust.AsMapping.AddOrSetValue('FirstName', FirstName);
-        vyjCust.AsMapping.AddOrSetValue('LastName', LastName);
-        vyjCust.AsMapping.AddOrSetValue('City', City);
-        vyjCust.AsMapping.AddOrSetValue('State', State);
+      vyjCust.S['FirstName'] := FirstName;
+      vyjCust.S['LastName'] := LastName;
+      vyjCust.S['City'] := City;
+      vyjCust.S['State'] := State;
 
-        // === INVOICES ===
-        var vyjInvoices := vyjCust.AsMapping.AddOrSetSequence('invoices');
-        ExportInvoices(
-          procedure(const InvoiceID: Integer; const InvoiceDT: TDateTime; const InvoiceTotal: Double)
-          begin
-            var vyjInv := vyjInvoices.AddMapping;
-            vyjInv.AsMapping.AddOrSetValue('InvId', InvoiceID);
-            vyjInv.AsMapping.AddOrSetValue('InvDT', InvoiceDT);
-            vyjInv.AsMapping.AddOrSetValue('Total', InvoiceTotal);
+      // === INVOICES ===
+      var vyjInvoices := vyjCust.AsMapping.AddOrSetSequence('invoices');
+      ExportInvoices(
+        procedure(const InvoiceID: Integer; const InvoiceDT: TDateTime; const InvoiceTotal: Double)
+        begin
+          var vyjInv := vyjInvoices.AddMapping;
+          vyjInv.I['InvId'] := InvoiceID;
+          vyjInv.D['InvDT'] := InvoiceDT;
+          vyjInv.F['Total'] := InvoiceTotal;
 
-            // === INVOICE ITEMS ===
-            var vyjItems := vyjInv.AsMapping.AddOrSetSequence('items');
-            ExportItems(
-              procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
-              begin
-                var vyjInvItem := vyjItems.AddMapping;
-                vyjInvItem.AsMapping.AddOrSetValue('LineId', LineID);
-                vyjInvItem.AsMapping.AddOrSetValue('TrackId', TrackID);
-                vyjInvItem.AsMapping.AddOrSetValue('UnitPrice', UnitPrice);
-                vyjInvItem.AsMapping.AddOrSetValue('Quantity', Quantity);
-              end);
-          end);
-      end);
+          // === INVOICE ITEMS ===
+          var vyjItems := vyjInv.AsMapping.AddOrSetSequence('items');
+          ExportItems(
+            procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
+            begin
+              var vyjInvItem := vyjItems.AddMapping;
+              vyjInvItem.I['LineId'] := LineID;
+              vyjInvItem.I['TrackId'] := TrackID;
+              vyjInvItem.F['UnitPrice'] := UnitPrice;
+              vyjInvItem.I['Quantity'] := Quantity;
+            end);
+        end);
+    end);
 
-    TYAML.WriteToJSONFile(vyj, FExportFilename);
+  TYAML.WriteToJSONFile(vyj, FExportFilename);
+end;
+
+procedure TfrmJSONConvert.ExportToSuperObject;
+var
+  soj: ISuperObject;
+begin
+  FExportFilename := 'SuperObject.json';
+
+  soj := SO; // create a SuperObject
+
+  // == CUSTOMERS ==
+  var sojCustomers := SA; // create a SuperArray
+  ExportCustomers(
+    procedure(const FirstName, LastName, City, State: string)
+    begin
+      var soCust := SO;
+      soCust.S['FirstName'] := FirstName;
+      soCust.S['LastName'] := LastName;
+      soCust.S['City'] := City;
+      soCust.S['State'] := State;
+
+      // === INVOICES ===
+      var soInvList := SA;
+      ExportInvoices(
+        procedure(const InvoiceID: Integer; const InvoiceDT: TDateTime; const InvoiceTotal: Double)
+        begin
+          var soInv := SO;
+
+          soInv.I['InvId'] := InvoiceID;
+          soInv.V['InvDT'] := InvoiceDT;
+          soInv.D['Total'] := InvoiceTotal;
+
+          // === INVOICE ITEMS ===
+          var soInvItems := SA;
+          ExportItems(
+            procedure(const LineID, TrackID: Integer; const UnitPrice: Double; const Quantity: Integer)
+            begin
+              var soItem := SO;
+              soItem.I['LineId'] := LineID;
+              soItem.I['TrackId'] := TrackID;
+              soItem.D['UnitPrice'] := UnitPrice;
+              soItem.I['Quantity'] := Quantity;
+
+              soInvItems.AsArray.Add(soItem);
+            end);
+          soInv.O['items'] := soInvItems;
+          soInvList.AsArray.Add(soInv);
+        end);
+
+    soCust.O['invoices'] := soInvList;
+    sojCustomers.AsArray.Add(soCust);
+  end);
+
+  soj.AsObject.O['customers'] := sojCustomers;
+  soj.SaveTo(FExportFilename);
 end;
 
 
